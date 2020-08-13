@@ -11,3 +11,8 @@ func New() Papilo {
 		pipeline: newPipeline(),
 	}
 }
+
+// SetSource registers a data source for the pipeline
+func (p Papilo) SetSource(s Sourcer) {
+	p.pipeline.sourcer = s
+}
