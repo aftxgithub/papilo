@@ -1,5 +1,7 @@
 package papilo
 
+import "fmt"
+
 // Papilo is the orchestrator for a pipeline
 type Papilo struct {
 	pipeline Pipeline
@@ -14,6 +16,13 @@ func New() Papilo {
 
 // Run starts the pipeline
 func (p Papilo) Run() error {
+	if p.pipeline.sourcer == nil {
+		return fmt.Errorf("Data source not defined")
+	}
+	if p.pipeline.sinker == nil {
+		return fmt.Errorf("Data sink not defined")
+	}
+
 	hIndex := len(p.pipeline.components) - 1
 	cchan := make(chan []byte)
 
@@ -30,6 +39,8 @@ func (p Papilo) Run() error {
 
 	// start the source
 	go p.pipeline.sourcer.Source(cchan)
+
+	return nil
 }
 
 // SetSource registers a data source for the pipeline
