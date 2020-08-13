@@ -21,3 +21,8 @@ func (p Papilo) SetSource(s Sourcer) {
 func (p Papilo) SetSink(s Sinker) {
 	p.pipeline.sinker = s
 }
+
+// AddComponent adds a component to the pipeline
+func (p Papilo) AddComponent(c Component) {
+	p.pipeline.components = append(p.pipeline.components, c)
+}
