@@ -6,3 +6,7 @@ type Pipeline struct {
 	components []Component
 	sinker     Sinker
 }
+
+func newPipeline() Pipeline {
+	return Pipeline{}
+}
