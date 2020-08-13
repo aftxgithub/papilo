@@ -16,3 +16,8 @@ func New() Papilo {
 func (p Papilo) SetSource(s Sourcer) {
 	p.pipeline.sourcer = s
 }
+
+// SetSink registers a data sink for the pipeline
+func (p Papilo) SetSink(s Sinker) {
+	p.pipeline.sinker = s
+}
