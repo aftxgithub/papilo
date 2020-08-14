@@ -21,7 +21,7 @@ func (t TestFileSourceSink) Sink(in chan interface{}) {
 }
 
 func TestFileSource(t *testing.T) {
-	testFile, err := ioutil.TempFile(".", "test")
+	testFile, err := ioutil.TempFile("/tmp", "test*.txt")
 	if err != nil {
 		t.Error(err)
 	}
