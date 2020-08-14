@@ -36,3 +36,18 @@ Papilo offers default sources, sinks and components:
 
 - Components:
     - Sum: Continuously push the sum of all previous numbers to the sink
+
+
+## Examples
+Read from stdin, write to stdout:
+```go
+package main
+
+import "github.com/thealamu/papilo/pkg/papilo"
+
+func main() {
+    p := papilo.New()
+    p.Run() // Default data source is stdin, default data sink is stdout
+    defer p.Stop()
+}
+```
