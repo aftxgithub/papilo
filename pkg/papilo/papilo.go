@@ -18,6 +18,7 @@ func New() *Papilo {
 		wg:       sync.WaitGroup{},
 	}
 	pilo.pipeline.sourcer = NewStdinSource()
+	pilo.pipeline.sinker = NewStdoutSink()
 	return &pilo
 }
 
