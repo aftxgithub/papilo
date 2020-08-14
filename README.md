@@ -1,4 +1,6 @@
 # Papilo
+![Go](https://github.com/thealamu/papilo/workflows/Go/badge.svg)
+
 Stream data processing micro-framework; Read, clean, process and store data using pre-defined and custom pipelines.
 
 Papilo packages common and simple data processing functions for reuse, allows definition of custom components/functions and allows permutations of them in powerful ways using the *Pipes and Filters Architecture*.
