@@ -33,8 +33,12 @@ func TestFileSink(t *testing.T) {
 	if err != nil {
 		t.Error(err)
 	}
-	var data []byte
-	testFile.Read(data)
+	defer testFile.Close()
+
+	data, err := ioutil.ReadFile(testFileName)
+	if err != nil {
+		t.Error(err)
+	}
 
 	if string(data) != "Hello World!" {
 		t.Errorf("Wrong data, expected 'Hello World!', got %s", string(data))
