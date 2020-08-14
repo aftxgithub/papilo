@@ -2,7 +2,6 @@ package papilo
 
 import (
 	"fmt"
-	"os"
 	"sync"
 )
 
@@ -18,7 +17,7 @@ func New() *Papilo {
 		pipeline: newPipeline(),
 		wg:       sync.WaitGroup{},
 	}
-	pilo.pipeline.sourcer = NewFdSource(os.Stdin)
+	pilo.pipeline.sourcer = NewStdinSource()
 	return &pilo
 }
 
