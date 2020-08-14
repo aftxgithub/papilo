@@ -2,6 +2,7 @@ package papilo
 
 import (
 	"fmt"
+	"os"
 	"sync"
 )
 
@@ -12,11 +13,13 @@ type Papilo struct {
 }
 
 // New returns a new Papilo object
-func New() Papilo {
-	return Papilo{
+func New() *Papilo {
+	pilo := Papilo{
 		pipeline: newPipeline(),
 		wg:       sync.WaitGroup{},
 	}
+	pilo.pipeline.sourcer = NewFdSource(os.Stdin)
+	return &pilo
 }
 
 // Run starts the pipeline
