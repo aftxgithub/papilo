@@ -52,6 +52,11 @@ func (p *Papilo) Run() error {
 	return nil
 }
 
+// Stop ends the pipeline
+func (p *Papilo) Stop() {
+	p.wg.Done()
+}
+
 // SetSource registers a data source for the pipeline
 func (p *Papilo) SetSource(s Sourcer) {
 	p.pipeline.sourcer = s
