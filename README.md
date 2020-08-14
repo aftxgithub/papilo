@@ -18,5 +18,8 @@ Papilo packages common and simple data processing functions for reuse, allows de
 ### Architecture
 ![Architecture](./images/architecture.svg)
 
+The Pipes and Filters architectural pattern provides a structure for systems that process a stream of data.
+In this architecture, data is born from a **data source**, passes through **pipes** to intermediate stages called **filter components** and ends up in a **data sink**. Filter Components are the processing units of the pipeline, a filter can enrich (add information to) data, refine (remove information from) data and transform data by delivering data in some other representation. Any two components are connected by pipes; Pipes are the carriers of data into adjacent components. Although this can be implemented in any language, Go lends itself well to this architecture through the use of channels as pipes.
+
 ### Defaults
 Papilo offers default sources, sinks and components
