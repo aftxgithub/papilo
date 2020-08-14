@@ -9,6 +9,7 @@ import (
 type Papilo struct {
 	pipeline Pipeline
 	wg       sync.WaitGroup
+	running  bool
 }
 
 // New returns a new Papilo object
@@ -24,6 +25,10 @@ func New() *Papilo {
 
 // Run starts the pipeline
 func (p *Papilo) Run() error {
+	if p.running {
+		return fmt.Errorf("Pipeline already running")
+	}
+
 	if p.pipeline.sourcer == nil {
 		return fmt.Errorf("Data source not defined")
 	}
@@ -48,6 +53,8 @@ func (p *Papilo) Run() error {
 
 	// start the source
 	go p.pipeline.sourcer.Source(cchan)
+	// pipeline is running
+	p.running = true
 	p.wg.Add(1)
 
 	// block till pipeline is stopped
@@ -58,7 +65,10 @@ func (p *Papilo) Run() error {
 
 // Stop ends the pipeline
 func (p *Papilo) Stop() {
-	p.wg.Done()
+	if p.running {
+		p.wg.Done()
+		p.running = false
+	}
 }
 
 // SetSource registers a data source for the pipeline
