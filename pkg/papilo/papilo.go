@@ -29,14 +29,14 @@ func (p *Papilo) Run() error {
 	}
 
 	hIndex := len(p.pipeline.components) - 1
-	cchan := make(chan []byte)
+	cchan := make(chan interface{})
 
 	// start the sink
 	go p.pipeline.sinker.Sink(cchan)
 
 	// start the components, readers first
 	for i := hIndex; i >= 0; i-- {
-		mchan := make(chan []byte)
+		mchan := make(chan interface{})
 		go p.pipeline.components[i](mchan, cchan)
 		// Next component uses this channel as its output
 		cchan = mchan
