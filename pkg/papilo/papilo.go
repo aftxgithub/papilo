@@ -34,7 +34,8 @@ func (p *Papilo) Run() error {
 	// start the sink
 	go p.pipeline.sinker.Sink(cchan)
 
-	// start the components, readers first
+	// start the components
+	// start readers first to prevent deadlock
 	for i := hIndex; i >= 0; i-- {
 		mchan := make(chan interface{})
 		go p.pipeline.components[i](mchan, cchan)

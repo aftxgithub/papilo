@@ -15,3 +15,8 @@ Papilo packages common and simple data processing functions for reuse, allows de
 - **Custom source**: Define a custom source for data ingress
 - **Multiple formats**: Transform input and output data using transformation components
 
+### Architecture
+![Architecture](./images/architecture.svg)
+
+### Defaults
+Papilo offers default sources, sinks and components
