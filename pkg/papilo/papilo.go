@@ -1,21 +1,26 @@
 package papilo
 
-import "fmt"
+import (
+	"fmt"
+	"sync"
+)
 
 // Papilo is the orchestrator for a pipeline
 type Papilo struct {
 	pipeline Pipeline
+	wg       sync.WaitGroup
 }
 
 // New returns a new Papilo object
 func New() Papilo {
 	return Papilo{
 		pipeline: newPipeline(),
+		wg:       sync.WaitGroup{},
 	}
 }
 
 // Run starts the pipeline
-func (p Papilo) Run() error {
+func (p *Papilo) Run() error {
 	if p.pipeline.sourcer == nil {
 		return fmt.Errorf("Data source not defined")
 	}
@@ -39,21 +44,25 @@ func (p Papilo) Run() error {
 
 	// start the source
 	go p.pipeline.sourcer.Source(cchan)
+	p.wg.Add(1)
+
+	// block till pipeline is stopped
+	p.wg.Wait()
 
 	return nil
 }
 
 // SetSource registers a data source for the pipeline
-func (p Papilo) SetSource(s Sourcer) {
+func (p *Papilo) SetSource(s Sourcer) {
 	p.pipeline.sourcer = s
 }
 
 // SetSink registers a data sink for the pipeline
-func (p Papilo) SetSink(s Sinker) {
+func (p *Papilo) SetSink(s Sinker) {
 	p.pipeline.sinker = s
 }
 
 // AddComponent adds a component to the pipeline
-func (p Papilo) AddComponent(c Component) {
+func (p *Papilo) AddComponent(c Component) {
 	p.pipeline.components = append(p.pipeline.components, c)
 }
