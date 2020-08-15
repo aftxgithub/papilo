@@ -69,4 +69,9 @@ func TestPipe(t *testing.T) {
 	if !ok || sd != 6 {
 		t.Errorf("Write method does not send data to next pipe")
 	}
+
+	err := nextPipe.Write(5)
+	if err == nil {
+		t.Errorf("Expected end of the line error, got nil")
+	}
 }

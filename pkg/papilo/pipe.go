@@ -81,6 +81,10 @@ func (p *Pipe) listen() {
 }
 
 // Write sends data to the next pipe
-func (p *Pipe) Write(data interface{}) {
+func (p *Pipe) Write(data interface{}) error {
+	if p.out == nil {
+		return fmt.Errorf("End of the line")
+	}
 	p.out.in <- data
+	return nil
 }
