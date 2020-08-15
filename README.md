@@ -48,6 +48,5 @@ import "github.com/thealamu/papilo/pkg/papilo"
 func main() {
     p := papilo.New()
     p.Run() // Default data source is stdin, default data sink is stdout
-    defer p.Stop()
 }
 ```
