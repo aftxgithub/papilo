@@ -9,6 +9,7 @@ var cfgName = "pipeline.yaml"
 // Cfg holds the pipeline configurations
 type Cfg struct {
 	Pipeline pipeline `yaml:"pipeline"`
+	path     string
 }
 
 type pipeline struct {
@@ -28,13 +29,13 @@ type sink struct {
 }
 
 // Config returns a new Cfg
-func Config(filename string) *Cfg {
-	if filename == "" {
-		filename = cfgName
+func Config(filepath string) *Cfg {
+	if filepath == "" {
+		filepath = cfgName
 	}
-	_, err := os.Stat(filename)
+	_, err := os.Stat(filepath)
 	if err != nil {
 		return nil
 	}
-	return &Cfg{}
+	return &Cfg{path: filepath}
 }
