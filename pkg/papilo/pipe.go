@@ -49,9 +49,10 @@ func (p *Pipe) Next() (interface{}, error) {
 // Close closes a pipe and propagates the close to pipes after it to prevent a clog
 func (p *Pipe) Close() {
 	if p.out == nil {
+		p.IsClosed = true
 		return
 	}
-	p.out.Close()
+	p.out.Close() // propagate downstream
 	p.IsClosed = true
 }
 
