@@ -77,3 +77,8 @@ func (p *Pipe) listen() {
 		}
 	}
 }
+
+// Write sends data to the next pipe
+func (p *Pipe) Write(data interface{}) {
+	p.out.in <- data
+}
