@@ -18,3 +18,11 @@ type Pipe struct {
 	// buffer holds the pipe's data
 	buffer []interface{}
 }
+
+func newPipe(bufSize int) Pipe {
+	p := Pipe{
+		bufSize: bufSize,
+		buffer:  make([]interface{}, bufSize),
+	}
+	return p
+}
