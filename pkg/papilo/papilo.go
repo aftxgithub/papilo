@@ -10,6 +10,8 @@ type Papilo struct {
 	pipeline Pipeline
 	wg       sync.WaitGroup
 	running  bool
+	// bufSize is the size of a pipe buffer
+	bufSize int
 }
 
 // New returns a new Papilo object
@@ -17,6 +19,7 @@ func New() *Papilo {
 	pilo := Papilo{
 		pipeline: newPipeline(),
 		wg:       sync.WaitGroup{},
+		bufSize:  1,
 	}
 	pilo.pipeline.sourcer = NewStdinSource()
 	pilo.pipeline.sinker = NewStdoutSink()
