@@ -1,5 +1,7 @@
 package papilo
 
+import "fmt"
+
 // Pipe implements a buffered pipe.
 // A buffered pipe connects two filter components.
 //
@@ -25,4 +27,14 @@ func newPipe(bufSize int) Pipe {
 		buffer:  make([]interface{}, bufSize),
 	}
 	return p
+}
+
+// Next returns the next data in the buffer.
+// An error is returned if there is no data in the buffer.
+func (p *Pipe) Next() (interface{}, error) {
+	if p.count == 0 {
+		return nil, fmt.Errorf("No data in buffer")
+	}
+	p.count--
+	return p.buffer[p.count], nil
 }
