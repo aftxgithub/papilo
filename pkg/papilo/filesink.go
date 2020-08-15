@@ -30,7 +30,7 @@ func NewFdSink(fd *os.File) FileSink {
 // Defined input for this sink is a slice of bytes.
 // Sink will create a file if it does not exist
 // or truncate the file otherwise.
-func (f FileSink) Sink(in chan interface{}) {
+func (f FileSink) Sink(p *Pipe) {
 	var fd *os.File = f.fdesc
 	if fd == nil {
 		var err error
@@ -41,10 +41,15 @@ func (f FileSink) Sink(in chan interface{}) {
 	}
 	defer fd.Close()
 
-	for d := range in {
+	for !p.IsClosed {
+		d, err := p.Next()
+		if err != nil {
+			// no data in pipe
+			continue
+		}
 		data, ok := d.([]byte)
 		if !ok {
-			panic("FileSink: Expected []bytes")
+			panic("FileSink expects []bytes")
 		}
 		fd.Write(data)
 	}

@@ -29,7 +29,7 @@ func NewFdSource(fd *os.File) FileSource {
 
 // Source is the implementation for the Sourcer interface.
 // Defined output for this source is a slice of bytes.
-func (f FileSource) Source(out chan interface{}) {
+func (f FileSource) Source(p *Pipe) {
 	var fd *os.File = f.fdesc
 	if fd == nil {
 		var err error
@@ -41,7 +41,7 @@ func (f FileSource) Source(out chan interface{}) {
 
 	scanner := bufio.NewScanner(fd)
 	for scanner.Scan() {
-		out <- scanner.Bytes()
+		p.Write(scanner.Bytes())
 	}
 
 	if err := scanner.Err(); err != nil {
