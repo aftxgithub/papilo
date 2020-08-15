@@ -10,10 +10,13 @@ var cfgName = "pipeline.yaml"
 type Cfg struct{}
 
 // Config returns a new Cfg
-func Config() (Cfg, error) {
-	_, err := os.Stat(cfgName)
-	if err != nil {
-		return Cfg{}, err
+func Config(filename string) *Cfg {
+	if filename == "" {
+		filename = cfgName
 	}
-	return Cfg{}, nil
+	_, err := os.Stat(filename)
+	if err != nil {
+		return nil
+	}
+	return &Cfg{}
 }
