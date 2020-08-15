@@ -25,8 +25,8 @@ type Pipe struct {
 	IsClosed bool
 }
 
-func newPipe(bufSize int, next *Pipe) Pipe {
-	p := Pipe{
+func newPipe(bufSize int, next *Pipe) *Pipe {
+	p := &Pipe{
 		bufSize: bufSize,
 		buffer:  make([]interface{}, bufSize),
 		in:      make(chan interface{}),
