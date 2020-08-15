@@ -2,6 +2,8 @@ package papilocmd
 
 import (
 	"os"
+
+	"gopkg.in/yaml.v2"
 )
 
 var cfgName = "pipeline.yaml"
@@ -15,7 +17,7 @@ type Cfg struct {
 type pipeline struct {
 	Source     source   `yaml:"source"`
 	Components []string `yaml:"components"`
-	Sink       string   `yaml:"sink"`
+	Sink       sink     `yaml:"sink"`
 }
 
 type source struct {
@@ -33,9 +35,18 @@ func Config(filepath string) *Cfg {
 	if filepath == "" {
 		filepath = cfgName
 	}
-	_, err := os.Stat(filepath)
+
+	fd, err := os.Open(filepath)
 	if err != nil {
 		return nil
 	}
-	return &Cfg{path: filepath}
+	defer fd.Close()
+
+	var cfg Cfg
+	err = yaml.NewDecoder(fd).Decode(&cfg)
+	if err != nil {
+		return nil
+	}
+
+	return &cfg
 }
