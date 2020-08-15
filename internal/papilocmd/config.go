@@ -30,7 +30,7 @@ type sink struct {
 	Config map[string]interface{} `yaml:"config"`
 }
 
-// Config returns a new Cfg
+// Config returns the read config
 func Config(filepath string) *Cfg {
 	if filepath == "" {
 		filepath = cfgName
