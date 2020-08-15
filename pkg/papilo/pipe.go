@@ -12,19 +12,22 @@ import "fmt"
 type Pipe struct {
 	// bufSize is the max data the pipe can hold at a time
 	bufSize int
-	// isClosed is true only when a pipe has been closed
-	// and is no more interested in data.
-	isClosed bool
 	// count is the number of data in the pipe at any time
 	count int
 	// buffer holds the pipe's data
 	buffer []interface{}
+	// IsClosed is true only when a pipe has been closed
+	// and is no more interested in data.
+	IsClosed bool
+	// out is the next pipe linked to this pipe
+	out *Pipe
 }
 
-func newPipe(bufSize int) Pipe {
+func newPipe(bufSize int, next *Pipe) Pipe {
 	p := Pipe{
 		bufSize: bufSize,
 		buffer:  make([]interface{}, bufSize),
+		out:     next,
 	}
 	return p
 }
