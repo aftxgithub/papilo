@@ -29,6 +29,7 @@ func newPipe(bufSize int, next *Pipe) Pipe {
 	p := Pipe{
 		bufSize: bufSize,
 		buffer:  make([]interface{}, bufSize),
+		in:      make(chan interface{}),
 		out:     next,
 	}
 	go p.listen()
