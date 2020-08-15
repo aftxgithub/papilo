@@ -40,22 +40,24 @@ func (p *Papilo) Run() error {
 	}
 
 	hIndex := len(p.pipeline.components) - 1
-	cchan := make(chan interface{})
+	//cchan := make(chan interface{})
+	cpipe := newPipe(p.bufSize, nil)
 
 	// start the sink
-	go p.pipeline.sinker.Sink(cchan)
+	go p.pipeline.sinker.Sink(cpipe)
 
 	// start the components
 	// start readers first to prevent deadlock
 	for i := hIndex; i >= 0; i-- {
-		mchan := make(chan interface{})
-		go p.pipeline.components[i](mchan, cchan)
+		mpipe := newPipe(p.bufSize, cpipe)
+		go p.pipeline.components[i](mpipe)
 		// Next component uses this channel as its output
-		cchan = mchan
+		cpipe = mpipe
 	}
 
 	// start the source
-	go p.pipeline.sourcer.Source(cchan)
+	spipe := newPipe(0, cpipe)
+	go p.pipeline.sourcer.Source(spipe)
 	// pipeline is running
 	p.running = true
 	p.wg.Add(1)

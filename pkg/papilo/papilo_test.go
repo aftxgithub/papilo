@@ -7,17 +7,21 @@ import (
 
 type testSource struct{}
 
-func (t testSource) Source(out chan interface{}) {
-	out <- 5
+func (t testSource) Source(p *Pipe) {
+	p.Write(5)
 }
 
 var output int
 
 type testSink struct{}
 
-func (t testSink) Sink(in chan interface{}) {
-	for d := range in {
+func (t testSink) Sink(p *Pipe) {
+	for !p.IsClosed {
 		var ok bool
+		d, err := p.Next()
+		if err != nil {
+			continue
+		}
 		output, ok = d.(int)
 		if !ok {
 			panic("Expected data type int in sink")
@@ -29,15 +33,19 @@ func TestIntegration(t *testing.T) {
 	p := New()
 	p.SetSource(testSource{})
 	p.SetSink(testSink{})
-	p.AddComponent(func(in chan interface{}, out chan interface{}) {
-		for d := range in {
+	p.AddComponent(func(p *Pipe) {
+		for !p.IsClosed {
+			d, err := p.Next()
+			if err != nil {
+				continue
+			}
 			data, ok := d.(int)
 			if !ok {
 				t.Errorf("Expected data type int in squaring component")
 				return
 			}
 			o := data * data
-			out <- o
+			p.Write(o)
 		}
 	})
 	go p.Run()
