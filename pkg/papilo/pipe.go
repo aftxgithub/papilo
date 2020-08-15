@@ -31,6 +31,7 @@ func newPipe(bufSize int, next *Pipe) Pipe {
 		buffer:  make([]interface{}, bufSize),
 		out:     next,
 	}
+	go p.listen()
 	return p
 }
 
@@ -51,4 +52,28 @@ func (p *Pipe) Close() {
 	}
 	p.out.Close()
 	p.IsClosed = true
+}
+
+// isFull returns true if buffer is full, false otherwise
+func (p *Pipe) isFull() bool {
+	return p.count == p.bufSize
+}
+
+// listen opens the pipe up for incoming data
+func (p *Pipe) listen() {
+	for {
+		if p.IsClosed {
+			return
+		}
+		if p.isFull() {
+			continue
+		}
+		select {
+		case data := <-p.in:
+			// Insert in reverse order, end first
+			ins := p.bufSize - p.count - 1
+			p.buffer[ins] = data
+			p.count++
+		}
+	}
 }
