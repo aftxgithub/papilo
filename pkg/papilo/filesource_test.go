@@ -10,8 +10,13 @@ var fileSourceOutput string
 
 type TestFileSourceSink struct{}
 
-func (t TestFileSourceSink) Sink(in chan interface{}) {
-	for d := range in {
+func (t TestFileSourceSink) Sink(p *Pipe) {
+	for !p.IsClosed {
+		d, err := p.Next()
+		if err != nil {
+			// no data
+			continue
+		}
 		intmed, ok := d.([]byte)
 		if !ok {
 			panic("Expected string data in TestFileSourceSink")

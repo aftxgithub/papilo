@@ -9,8 +9,8 @@ import (
 
 type TestFileSinkSource struct{}
 
-func (t TestFileSinkSource) Source(out chan interface{}) {
-	out <- []byte("Hello World!")
+func (t TestFileSinkSource) Source(p *Pipe) {
+	p.Write([]byte("Hello World!"))
 }
 
 func TestFileSink(t *testing.T) {
