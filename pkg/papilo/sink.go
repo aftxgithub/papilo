@@ -5,5 +5,5 @@ package papilo
 type Sinker interface {
 	// Sink implements storage for processed data
 	// Sink reads from the provided channel
-	Sink(in chan interface{})
+	Sink(*Pipe)
 }
