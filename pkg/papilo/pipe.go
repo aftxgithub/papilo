@@ -33,11 +33,20 @@ func newPipe(bufSize int, next *Pipe) Pipe {
 }
 
 // Next returns the next data in the buffer.
-// An error is returned if there is no data in the buffer.
+// An error is returned if there is no data in the buffer
 func (p *Pipe) Next() (interface{}, error) {
 	if p.count == 0 {
 		return nil, fmt.Errorf("No data in buffer")
 	}
 	p.count--
 	return p.buffer[p.count], nil
+}
+
+// Close closes a pipe and propagates the close to pipes after it to prevent a clog
+func (p *Pipe) Close() {
+	if p.out == nil {
+		return
+	}
+	p.out.Close()
+	p.IsClosed = true
 }
