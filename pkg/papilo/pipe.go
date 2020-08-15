@@ -16,11 +16,13 @@ type Pipe struct {
 	count int
 	// buffer holds the pipe's data
 	buffer []interface{}
+	// out is the next pipe linked to this pipe
+	out *Pipe
+	// in is the channel through which a pipe receives data
+	in chan interface{}
 	// IsClosed is true only when a pipe has been closed
 	// and is no more interested in data.
 	IsClosed bool
-	// out is the next pipe linked to this pipe
-	out *Pipe
 }
 
 func newPipe(bufSize int, next *Pipe) Pipe {
