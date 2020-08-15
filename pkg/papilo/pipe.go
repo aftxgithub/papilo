@@ -32,6 +32,7 @@ func newPipe(bufSize int, next *Pipe) *Pipe {
 		in:      make(chan interface{}),
 		out:     next,
 	}
+	//TODO: Data sources should not listen
 	go p.listen()
 	return p
 }
