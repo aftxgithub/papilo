@@ -5,15 +5,15 @@ Stream data processing micro-framework; Read, clean, process and store data usin
 
 Papilo packages common and simple data processing functions for reuse, allows definition of custom components/functions and allows permutations of them in powerful ways using the *Pipes and Filters Architecture*.
 
-## Features
+## Features (WIP)
 - **Pipeline stages**: Read - Process - Store
-- **Extensibility**: Extend by adding custom components
-- **Pre-defined pipelines**: Papilo offers pre-defined pipelines in its command line tool
+- **Pre-defined pipelines**: Papilo offers pre-defined pipelines and components 
 - **Custom pipelines**: Organize components to create a custom pipeline flow
 - **Concurrency**: Run multiple pipelines concurrently
-- **Network source**: Papilo exposes REST and WebSocket APIs for data ingress
+- **Extensibility**: Extend by adding custom components
+- **Network source**: REST and WebSocket APIs for data ingress
 - **Custom source**: Define a custom source for data ingress
-- **Multiple formats**: Transform input and output data using transformation components
+- **Multiple formats**: Transform input and output data using transformation functions
 
 ### Architecture
 ![Architecture](./images/architecture.svg)
@@ -27,8 +27,8 @@ Papilo offers default sources, sinks and components:
 - Sources:
     - File: Read lines from a file
     - Stdin: Read lines from standard input (default)
-    - Network: A REST endpoint is exposed on a port
-    - WebSocket: Full duplex communication, exposed on a port
+    - (WIP): Network: A REST endpoint is exposed on a port
+    - (WIP): WebSocket: Full duplex communication, exposed on a port
 
 - Sinks:
     - File: Write sink data to file
