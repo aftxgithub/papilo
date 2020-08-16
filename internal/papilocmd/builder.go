@@ -6,66 +6,83 @@ import (
 	"github.com/thealamu/papilo/pkg/papilo"
 )
 
-// Build builds a papilo pipeline using the config
-func Build(cfg *Cfg) (*papilo.Papilo, error) {
-	p := papilo.New()
-	if cfg == nil {
-		return p, nil
-	}
-
-	var err error
+// BuildPipeline builds a papilo pipeline using the config
+func BuildPipeline(cfg *Cfg) (*papilo.Pipeline, error) {
+	mains := &papilo.Pipeline{}
 
 	// Set the source
-	switch cfg.Pipeline.Source.Type {
-	case "file":
-		err = setFileSource(p, cfg.Pipeline.Source.Config)
-	case "stdin":
-		// do nothing, source defaults to stdin
-	default:
-		err = fmt.Errorf("Invalid source %s", cfg.Pipeline.Source.Type)
+	err := buildSource(cfg.Pipeline.Source, mains)
+	if err != nil {
+		return nil, err
 	}
 
 	// Add components
-	for _, cpnt := range cfg.Pipeline.Components {
-		switch cpnt {
-		case "sum":
-			addSumComponent(p)
-		}
+	err = buildCmpnts(cfg.Pipeline.Components, mains)
+	if err != nil {
+		return nil, err
 	}
 
 	// Set the sink
-	switch cfg.Pipeline.Sink.Type {
-	case "file":
-		err = setFileSink(p, cfg.Pipeline.Sink.Config)
-	case "stdout":
-		// do nothing, defaults to stdout
-	default:
-		err = fmt.Errorf("Invalid sink %s", cfg.Pipeline.Sink.Type)
+	err = buildSink(cfg.Pipeline.Sink, mains)
+	if err != nil {
+		return nil, err
 	}
 
-	return p, err
+	return mains, nil
 }
 
-func setFileSource(p *papilo.Papilo, config map[string]interface{}) error {
+func buildCmpnts(cmpnts []string, pline *papilo.Pipeline) (err error) {
+	for _, cmpnt := range cmpnts {
+		switch cmpnt {
+		case "sum":
+			pline.Components = append(pline.Components, papilo.SumComponent)
+		default:
+			err = fmt.Errorf("Invalid component %s", cmpnt)
+		}
+	}
+	return
+}
+
+func buildSource(src source, pline *papilo.Pipeline) (err error) {
+	switch src.Type {
+	case "file":
+		err = setFileSource(pline, src.Config)
+	case "stdin":
+		// do nothing, source defaults to stdin
+	default:
+		err = fmt.Errorf("Invalid source %s", src.Type)
+	}
+	return
+}
+
+func setFileSource(p *papilo.Pipeline, config map[string]interface{}) error {
 	pI := config["path"]
 	path, ok := pI.(string)
 	if !ok {
 		return fmt.Errorf("Source filepath should be string")
 	}
-	p.SetSource(papilo.NewFileSource(path))
+	p.Sourcer = papilo.NewFileSource(path)
 	return nil
 }
 
-func addSumComponent(p *papilo.Papilo) {
-	p.AddComponent(papilo.SumComponent)
+func buildSink(snk sink, pline *papilo.Pipeline) (err error) {
+	switch snk.Type {
+	case "file":
+		err = setFileSink(pline, snk.Config)
+	case "stdout":
+		// do nothing, defaults to stdout
+	default:
+		err = fmt.Errorf("Invalid sink %s", snk.Type)
+	}
+	return
 }
 
-func setFileSink(p *papilo.Papilo, config map[string]interface{}) error {
+func setFileSink(p *papilo.Pipeline, config map[string]interface{}) error {
 	pI := config["path"]
 	path, ok := pI.(string)
 	if !ok {
 		return fmt.Errorf("Sink filepath should be string")
 	}
-	p.SetSink(papilo.NewFileSink(path))
+	p.Sinker = papilo.NewFileSink(path)
 	return nil
 }

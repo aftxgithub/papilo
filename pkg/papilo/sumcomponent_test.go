@@ -30,12 +30,15 @@ func (t testSumSink) Sink(p *Pipe) {
 
 func TestSumComponent(t *testing.T) {
 	p := New()
-	p.SetSource(testSumSource{})
-	p.SetSink(testSumSink{})
-	p.AddComponent(SumComponent)
+	mains := &Pipeline{
+		Sourcer:    testSumSource{},
+		Sinker:     testSumSink{},
+		Components: []Component{SumComponent},
+	}
+	go p.Run(mains)
 
-	go p.Run()
 	time.Sleep(2 * time.Second)
+
 	if sumOutput != 15 {
 		t.Errorf("SumComponent does not do its work, expected 9, got %f", sumOutput)
 	}

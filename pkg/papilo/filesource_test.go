@@ -35,10 +35,12 @@ func TestFileSource(t *testing.T) {
 	testFile.Close()
 
 	p := New()
-	p.SetSource(NewFileSource(testFileName))
-	p.SetSink(TestFileSourceSink{})
+	mains := &Pipeline{
+		Sourcer: NewFileSource(testFileName),
+		Sinker:  TestFileSourceSink{},
+	}
+	go p.Run(mains)
 
-	go p.Run()
 	time.Sleep(time.Second * 2)
 	p.Stop()
 

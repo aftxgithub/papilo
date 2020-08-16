@@ -31,9 +31,8 @@ func (t testSink) Sink(p *Pipe) {
 
 func TestIntegration(t *testing.T) {
 	p := New()
-	p.SetSource(testSource{})
-	p.SetSink(testSink{})
-	p.AddComponent(func(p *Pipe) {
+
+	squareCmpt := func(p *Pipe) {
 		for !p.IsClosed {
 			d, err := p.Next()
 			if err != nil {
@@ -47,8 +46,15 @@ func TestIntegration(t *testing.T) {
 			o := data * data
 			p.Write(o)
 		}
-	})
-	go p.Run()
+	}
+
+	mains := &Pipeline{
+		Sourcer:    testSource{},
+		Sinker:     testSink{},
+		Components: []Component{squareCmpt},
+	}
+	go p.Run(mains)
+
 	time.Sleep(2 * time.Second)
 	p.Stop()
 

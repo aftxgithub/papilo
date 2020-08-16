@@ -2,11 +2,15 @@ package papilo
 
 // Pipeline represents a whole pipeline of components
 type Pipeline struct {
-	sourcer    Sourcer
-	components []Component
-	sinker     Sinker
-}
+	// Data Source for pipeline
+	Sourcer Sourcer
 
-func newPipeline() Pipeline {
-	return Pipeline{}
+	// Components for pipeline, order matters
+	Components []Component
+
+	// Data Sink for pipeline
+	Sinker Sinker
+
+	// BufSize is the size of a pipe buffer
+	BufSize int
 }

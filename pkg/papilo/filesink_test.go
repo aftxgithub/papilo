@@ -22,10 +22,12 @@ func TestFileSink(t *testing.T) {
 	testFile.Close()
 
 	p := New()
-	p.SetSource(TestFileSinkSource{})
-	p.SetSink(NewFileSink(testFileName))
+	mains := &Pipeline{
+		Sourcer: TestFileSinkSource{},
+		Sinker:  NewFileSink(testFileName),
+	}
+	go p.Run(mains)
 
-	go p.Run()
 	time.Sleep(time.Second * 2)
 	p.Stop()
 
