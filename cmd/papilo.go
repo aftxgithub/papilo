@@ -5,6 +5,7 @@ import (
 
 	flag "github.com/spf13/pflag"
 	"github.com/thealamu/papilo/internal/papilocmd"
+	"github.com/thealamu/papilo/pkg/papilo"
 )
 
 var cfgFilePath string
@@ -14,16 +15,17 @@ func main() {
 
 	cfg := papilocmd.Config(cfgFilePath)
 	if cfg == nil {
-		log.Println("Could not read config file, using default")
+		log.Println("Could not read config file, using defaults")
 	}
 
-	p, err := papilocmd.Build(cfg)
+	mains, err := papilocmd.BuildPipeline(cfg)
 	if err != nil {
 		log.Println(err)
 		return
 	}
 
-	p.Run()
+	p := papilo.New()
+	p.Run(mains)
 }
 
 func parseFlags() {

@@ -10,6 +10,10 @@ import (
 func BuildPipeline(cfg *Cfg) (*papilo.Pipeline, error) {
 	mains := &papilo.Pipeline{}
 
+	if cfg == nil {
+		return mains, nil
+	}
+
 	// Set the source
 	err := buildSource(cfg.Pipeline.Source, mains)
 	if err != nil {
