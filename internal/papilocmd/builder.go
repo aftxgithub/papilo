@@ -65,7 +65,12 @@ func setFileSource(p *papilo.Pipeline, config map[string]interface{}) error {
 	if !ok {
 		return fmt.Errorf("Source filepath should be string")
 	}
-	p.Sourcer = papilo.NewFileSource(path)
+	pI = config["bsize"]
+	bsize, ok := pI.(int)
+	if !ok {
+		bsize = 1024
+	}
+	p.Sourcer = papilo.NewFileSource(path, bsize)
 	return nil
 }
 
