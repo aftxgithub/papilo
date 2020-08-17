@@ -11,9 +11,9 @@ func SumComponent(p *Pipe) {
 		if err != nil {
 			continue
 		}
-		num, ok := d.(float64)
-		if !ok {
-			log.Println("SumComponent expected float64")
+		num, err := ToFloat64(d)
+		if err != nil {
+			log.Println(err)
 			continue
 		}
 		sum += num
