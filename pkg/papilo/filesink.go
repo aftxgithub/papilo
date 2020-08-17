@@ -1,6 +1,7 @@
 package papilo
 
 import (
+	"log"
 	"os"
 )
 
@@ -47,9 +48,10 @@ func (f FileSink) Sink(p *Pipe) {
 			// no data in pipe
 			continue
 		}
-		data, ok := d.([]byte)
-		if !ok {
-			panic("FileSink expects []bytes")
+		data, err := ToBytes(d)
+		if err != nil {
+			log.Println(err)
+			continue
 		}
 		fd.Write(data)
 	}
