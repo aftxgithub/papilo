@@ -6,30 +6,39 @@ import (
 	"os"
 )
 
+const (
+	// ReadTypeWord reads a word at a time
+	ReadTypeWord int = iota
+	// ReadTypeSent reads a sentence at a time
+	ReadTypeSent
+	// ReadTypeByte a byte at a time
+	ReadTypeByte
+)
+
 // FileSource implements a default file data source
 type FileSource struct {
 	filepath string
 	fdesc    *os.File
-	bSize    int
+	rType    int
 }
 
 // NewFileSource returns a new file data source for streaming bytes of a file.
 // The path parameter is the path of the file to be read,
 // byteSize is the number of bytes to write out at a time.
-func NewFileSource(path string, byteSize int) FileSource {
+func NewFileSource(path string, readType int) FileSource {
 	return FileSource{
 		filepath: path,
-		bSize:    byteSize,
+		rType:    readType,
 	}
 }
 
 // NewFdSource returns a new file data source for streaming bytes of a file.
 // The fd parameter is an opened file to be read,
 // byteSize is the number of bytes to write out at a time.
-func NewFdSource(fd *os.File, byteSize int) FileSource {
+func NewFdSource(fd *os.File, readType int) FileSource {
 	return FileSource{
 		fdesc: fd,
-		bSize: byteSize,
+		rType: readType,
 	}
 }
 
@@ -47,7 +56,7 @@ func (f FileSource) Source(p *Pipe) {
 
 	reader := bufio.NewReader(fd)
 	for {
-		dataBuf := make([]byte, f.bSize)
+		dataBuf := make([]byte, 1)
 		_, err := reader.Read(dataBuf)
 		if err == io.EOF {
 			break
