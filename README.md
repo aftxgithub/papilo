@@ -46,8 +46,9 @@ package main
 import "github.com/thealamu/papilo/pkg/papilo"
 
 func main() {
-    p := papilo.New()
-    p.Run() // Default data source is stdin, default data sink is stdout
+	p := papilo.New()
+	m := &papilo.Pipeline{} // Default data source is stdin, default data sink is stdout 
+	p.Run(m)	
 }
 ```
 Make every character in stream lowercase:
@@ -68,7 +69,9 @@ func lowerCmpt(p *papilo.Pipe) {
 
 func main() {
 	p := papilo.New()
-	p.AddComponent(lowerCmpt)
-	p.Run()
+	m := &papilo.Pipeline{
+		Components: []papilo.Component{lowerCmpt},
+	}
+	p.Run(m)
 }
 ```
