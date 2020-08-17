@@ -65,12 +65,25 @@ func setFileSource(p *papilo.Pipeline, config map[string]interface{}) error {
 	if !ok {
 		return fmt.Errorf("Source filepath should be string")
 	}
-	pI = config["bsize"]
-	bsize, ok := pI.(int)
+
+	pI = config["read"]
+	read, ok := pI.(string)
 	if !ok {
-		bsize = 1024
+		read = "line"
 	}
-	p.Sourcer = papilo.NewFileSource(path, bsize)
+	var rType int
+	switch read {
+	case "line":
+		rType = papilo.ReadTypeLine
+	case "word":
+		rType = papilo.ReadTypeWord
+	case "byte":
+		rType = papilo.ReadTypeByte
+	default:
+		return fmt.Errorf("Read type unknown")
+	}
+
+	p.Sourcer = papilo.NewFileSource(path, rType)
 	return nil
 }
 
