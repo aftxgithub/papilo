@@ -2,6 +2,7 @@ package papilo
 
 import (
 	"bufio"
+	"io"
 	"os"
 )
 
@@ -44,12 +45,13 @@ func (f FileSource) Source(p *Pipe) {
 		}
 	}
 
-	scanner := bufio.NewScanner(fd)
-	for scanner.Scan() {
-		p.Write(scanner.Bytes())
-	}
-
-	if err := scanner.Err(); err != nil {
-		panic(err)
+	reader := bufio.NewReader(fd)
+	for {
+		dataBuf := make([]byte, f.bSize)
+		_, err := reader.Read(dataBuf)
+		if err == io.EOF {
+			break
+		}
+		p.Write(dataBuf)
 	}
 }

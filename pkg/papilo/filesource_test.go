@@ -2,6 +2,7 @@ package papilo
 
 import (
 	"io/ioutil"
+	"log"
 	"testing"
 	"time"
 )
@@ -21,6 +22,7 @@ func (t TestFileSourceSink) Sink(p *Pipe) {
 		if !ok {
 			panic("Expected string data in TestFileSourceSink")
 		}
+		log.Println(intmed)
 		fileSourceOutput = string(intmed)
 	}
 }
@@ -36,7 +38,7 @@ func TestFileSource(t *testing.T) {
 
 	p := New()
 	mains := &Pipeline{
-		Sourcer: NewFileSource(testFileName),
+		Sourcer: NewFileSource(testFileName, 32),
 		Sinker:  TestFileSourceSink{},
 	}
 	go p.Run(mains)
