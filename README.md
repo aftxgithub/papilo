@@ -63,7 +63,7 @@ func main() {
 }
 ```
 
-Make every character in stream lowercase with a custom component:
+Make every character in stream lowercase using a custom component:
 ```go
 func lowerCmpt(p *papilo.Pipe) {
 	for !p.IsClosed { // read for as long as the pipe is open
