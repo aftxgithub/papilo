@@ -9,25 +9,30 @@ import (
 type FileSource struct {
 	filepath string
 	fdesc    *os.File
+	bSize    int
 }
 
-// NewFileSource returns a new file data source for streaming lines of a file.
-// The path parameter is the path of the file to be read.
-func NewFileSource(path string) FileSource {
+// NewFileSource returns a new file data source for streaming bytes of a file.
+// The path parameter is the path of the file to be read,
+// byteSize is the number of bytes to write out at a time.
+func NewFileSource(path string, byteSize int) FileSource {
 	return FileSource{
 		filepath: path,
+		bSize:    byteSize,
 	}
 }
 
-// NewFdSource returns a new file data source for streaming lines of a file.
-// The fd parameter is an opened file to be read.
-func NewFdSource(fd *os.File) FileSource {
+// NewFdSource returns a new file data source for streaming bytes of a file.
+// The fd parameter is an opened file to be read,
+// byteSize is the number of bytes to write out at a time.
+func NewFdSource(fd *os.File, byteSize int) FileSource {
 	return FileSource{
 		fdesc: fd,
+		bSize: byteSize,
 	}
 }
 
-// Source is the implementation for the Sourcer interface.
+// Source is the file implementation for the Sourcer interface.
 // Defined output for this source is a slice of bytes.
 func (f FileSource) Source(p *Pipe) {
 	var fd *os.File = f.fdesc
