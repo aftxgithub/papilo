@@ -2,15 +2,15 @@ package papilo
 
 import (
 	"bufio"
-	"io"
+	"log"
 	"os"
 )
 
 const (
 	// ReadTypeWord reads a word at a time
 	ReadTypeWord int = iota
-	// ReadTypeSent reads a sentence at a time
-	ReadTypeSent
+	// ReadTypeLine reads a line at a time
+	ReadTypeLine
 	// ReadTypeByte a byte at a time
 	ReadTypeByte
 )
@@ -54,13 +54,24 @@ func (f FileSource) Source(p *Pipe) {
 		}
 	}
 
-	reader := bufio.NewReader(fd)
-	for {
-		dataBuf := make([]byte, 1)
-		_, err := reader.Read(dataBuf)
-		if err == io.EOF {
-			break
-		}
-		p.Write(dataBuf)
+	scanner := bufio.NewScanner(fd)
+
+	switch f.rType {
+	case ReadTypeByte:
+		scanner.Split(bufio.ScanBytes)
+	case ReadTypeWord:
+		scanner.Split(bufio.ScanWords)
+	case ReadTypeLine:
+		scanner.Split(bufio.ScanLines)
+	default:
+		panic("Unknown read type")
+	}
+
+	for scanner.Scan() {
+		p.Write(scanner.Bytes())
+	}
+
+	if err := scanner.Err(); err != nil {
+		log.Println(err)
 	}
 }
