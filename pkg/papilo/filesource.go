@@ -22,9 +22,9 @@ type FileSource struct {
 	rType    int
 }
 
-// NewFileSource returns a new file data source for streaming bytes of a file.
+// NewFileSource returns a new file data source for streaming a file.
 // The path parameter is the path of the file to be read,
-// byteSize is the number of bytes to write out at a time.
+// readType determines how the file will be read: as bytes, words or lines.
 func NewFileSource(path string, readType int) FileSource {
 	return FileSource{
 		filepath: path,
@@ -32,9 +32,9 @@ func NewFileSource(path string, readType int) FileSource {
 	}
 }
 
-// NewFdSource returns a new file data source for streaming bytes of a file.
+// NewFdSource returns a new file data source for streaming file.
 // The fd parameter is an opened file to be read,
-// byteSize is the number of bytes to write out at a time.
+// readType determines how the file will be read: as bytes, words or lines.
 func NewFdSource(fd *os.File, readType int) FileSource {
 	return FileSource{
 		fdesc: fd,
