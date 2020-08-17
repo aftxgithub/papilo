@@ -51,7 +51,19 @@ func main() {
 	p.Run(m)	
 }
 ```
-Make every character in stream lowercase:
+
+Add a stream of numbers:
+```go
+func main() {
+	p := papilo.New()
+	m := &papilo.Pipeline{
+		Components: []papilo.Component{papilo.SumComponent},
+	}
+	p.Run(m)
+}
+```
+
+Make every character in stream lowercase with a custom component:
 ```go
 func lowerCmpt(p *papilo.Pipe) {
 	for !p.IsClosed { // read for as long as the pipe is open
