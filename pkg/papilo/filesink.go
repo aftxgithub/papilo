@@ -54,5 +54,6 @@ func (f FileSink) Sink(p *Pipe) {
 			continue
 		}
 		fd.Write(data)
+		fd.Write([]byte("\n"))
 	}
 }
