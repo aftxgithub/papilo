@@ -4,7 +4,7 @@ import "net/http"
 
 // ServerSource implements a default server source
 type ServerSource struct {
-	s   *http.Server
+	srv *http.Server
 	out chan []byte
 }
 
@@ -12,10 +12,10 @@ type ServerSource struct {
 // addr is the address and port to run the server on
 func NewServerSource(addr string) ServerSource {
 	srvSource := ServerSource{}
-	srvSource.s = &http.Server{
+	srvSource.srv = &http.Server{
 		Addr: addr,
 	}
-	srvSource.out = make(chan []byte)
+	srvSource.out = make(chan []byte, 1)
 	setHandler(&srvSource)
 	return srvSource
 }
@@ -29,5 +29,16 @@ func (s ServerSource) ServeHTTP(w http.ResponseWriter, r *http.Request) {}
 // Source is the server implementation for the Sourcer interface.
 // Defined output for this source is a slice of bytes.
 func (s ServerSource) Source(p *Pipe) {
+	go s.srv.ListenAndServe()
+	for d := range s.out {
+		if p.IsClosed {
+			s.shutdown()
+			break
+		}
+		p.Write(d)
+	}
+}
+
+func (s ServerSource) shutdown() {
 
 }
