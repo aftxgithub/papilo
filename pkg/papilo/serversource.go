@@ -1,6 +1,11 @@
 package papilo
 
-import "net/http"
+import (
+	"context"
+	"log"
+	"net/http"
+	"time"
+)
 
 // ServerSource implements a default server source
 type ServerSource struct {
@@ -40,5 +45,10 @@ func (s ServerSource) Source(p *Pipe) {
 }
 
 func (s ServerSource) shutdown() {
-
+	log.Printf("server.shutdown: shutting down server on %s\n", s.srv.Addr)
+	shutdownCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := s.srv.Shutdown(shutdownCtx); err != nil {
+		log.Fatal("server.shutdown: ", err)
+	}
 }
